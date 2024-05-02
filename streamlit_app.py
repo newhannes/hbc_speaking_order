@@ -52,9 +52,9 @@ if st.button("Generate Speaking Order"):
     order.index = order.index + 1
     styled = order.style.apply(highlight_party, axis=1)
     html = styled.to_html(index=False)
-
+    html = html.replace('<table', '<table style="border-spacing: 0 15px;"')
     st.write(html, unsafe_allow_html=True)
-
+    
     # Add a button to download the PDF
     pdf = pdfkit.from_string(html, False, options={"enable-local-file-access": ""})
     st.download_button(

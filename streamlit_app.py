@@ -47,8 +47,9 @@ def color_party(val):
     return f'background-color: {color}'
 
 if st.button("Generate Speaking Order"):
-    order = speaking_order(members_present, data)[["Order", "Speaker", "Party", "Rank", "State"]]
-    #order = order.set_index("Order")
+    order = speaking_order(members_present, data)[["Speaker", "Party", "Rank", "State"]]
+    order.reset_index(drop=True, inplace=True)
+    order.index = order.index + 1
     styled = order.style.apply(highlight_party, axis=1)
     html = styled.to_html(index=False)
 

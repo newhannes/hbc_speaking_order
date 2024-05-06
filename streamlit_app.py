@@ -74,7 +74,7 @@ if st.button("Generate Speaking Order"):
     st.write(html, unsafe_allow_html=True)
 
     html_pdf = styled_pdf.to_html(index=False)
-    timestamp = datetime.now(tz).strftime("%Y-%m-%d %H:%M")   
+    timestamp = datetime.now(tz).strftime("%Y-%m-%d %I:%M %p")   
     header_html = "<h1 style='text-align: center;'>House Budget Committee Speaking Order</h1>"
     timestamp_html = f"<h3 style='text-align: center;'>Generated at {timestamp}</h3>"
     html_pdf = header_html + timestamp_html + html_pdf

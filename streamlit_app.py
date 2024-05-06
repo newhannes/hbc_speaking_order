@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import pdfkit
 from datetime import datetime
+import pytz
+tz = pytz.timezone('US/Eastern')
+
 
 st.title("House Budget Committee Speaking Order")
 
@@ -71,7 +74,7 @@ if st.button("Generate Speaking Order"):
     st.write(html, unsafe_allow_html=True)
 
     html_pdf = styled_pdf.to_html(index=False)
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")   
+    timestamp = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")   
     header_html = "<h1 style='text-align: center;'>House Budget Committee Speaking Order</h1>"
     timestamp_html = f"<h3 style='text-align: center;'>Generated at {timestamp}</h3>"
     html_pdf = header_html + timestamp_html + html_pdf

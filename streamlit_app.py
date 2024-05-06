@@ -7,6 +7,7 @@ st.title("House Budget Committee Speaking Order")
 data = pd.read_csv("budget_committee_members.csv")
 data["Member"] = data["Member"].str.split(" ")
 data["Member"] = data["Member"].apply(lambda x: x[1])
+data['First Name'] = data["Member"].apply(lambda x: x[0])
 
 st.markdown(
     """
@@ -34,12 +35,12 @@ def speaking_order(present, data):
     order = {"Speaker" : [], "Party" : [], "Rank":[], "State":[]}
     for i in range(max(len(republicans), len(democrats))):
         if i < len(republicans):
-            order["Speaker"].append(republicans.iloc[i]['Member'])
+            order["Speaker"].append(republicans.iloc[i]['First Name'] + republicans.iloc[i]['Member'])
             order["Party"].append(republicans.iloc[i]['Party'])
             order["Rank"].append(republicans.iloc[i]['Rank'])
             order["State"].append(republicans.iloc[i]['State'])
         if i < len(democrats):
-            order["Speaker"].append(democrats.iloc[i]['Member'])
+            order["Speaker"].append(democrats.iloc[i]["First Name"] + democrats.iloc[i]['Member'])
             order["Party"].append(democrats.iloc[i]['Party'])
             order["Rank"].append(democrats.iloc[i]['Rank'])
             order["State"].append(democrats.iloc[i]['State'])
@@ -58,7 +59,7 @@ def color_party(val):
     return f'background-color: {color}'
 
 if st.button("Generate Speaking Order"):
-    order = speaking_order(members_present, data)[["Speaker", "Party", "Rank", "State"]]
+    order = speaking_order(members_present, data)[["Speaker", "Rank", "State", "Party"]]
     order.reset_index(drop=True, inplace=True)
     order.index = order.index + 1
     styled = order.style.apply(highlight_party, axis=1)

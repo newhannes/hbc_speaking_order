@@ -62,11 +62,12 @@ if st.button("Generate Speaking Order"):
     order.reset_index(drop=True, inplace=True)
     order.index = order.index + 1
     styled = order.style.apply(highlight_party, axis=1)
+    styled_pdf = order.drop(columns=["Party", "Rank"]).style.apply(highlight_party, axis=1)
     
     html = styled.to_html(index=False)
     st.write(html, unsafe_allow_html=True)
 
-    html_pdf = styled.drop(columns=["Party", "Rank"]).to_html(index=False)
+    html_pdf = styled_pdf.to_html(index=False)
     
     # Add a button to download the PDF
     pdf = pdfkit.from_string(html_pdf, False, options={"enable-local-file-access": ""})

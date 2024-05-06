@@ -90,7 +90,7 @@ if st.button("Generate Speaking Order"):
         if len(cells) > 2:
             cells[3].extract()
          
-    html_pdf = str(soup.prettify("utf-8", "html"))
+    html_pdf = str(soup.prettify())
 
     # Add a button to download the PDF
     pdf = pdfkit.from_string(html_pdf, False, options={"enable-local-file-access": ""})

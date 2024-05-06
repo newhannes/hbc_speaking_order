@@ -8,7 +8,18 @@ data = pd.read_csv("budget_committee_members.csv")
 data["Member"] = data["Member"].str.split(" ")
 data["Member"] = data["Member"].apply(lambda x: x[1])
 
-members_present = st.multiselect("Select the members present:", data["Member"].tolist())
+st.markdown(
+    """
+<style>
+span[data-baseweb="tag"] {
+  background-color: #84AE95 !important;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+members_present = st.multiselect("Select the members present (or start typing):", data["Member"].tolist())
 st.session_state.members_present = members_present
 
 def speaking_order(present, data):
@@ -51,12 +62,14 @@ if st.button("Generate Speaking Order"):
     order.reset_index(drop=True, inplace=True)
     order.index = order.index + 1
     styled = order.style.apply(highlight_party, axis=1)
+    
     html = styled.to_html(index=False)
-    html = html.replace('<table', '<table style="border-spacing: 0 15px;"')
     st.write(html, unsafe_allow_html=True)
+
+    html_pdf = styled.drop(columns=["Party", "Rank"]).to_html(index=False)
     
     # Add a button to download the PDF
-    pdf = pdfkit.from_string(html, False, options={"enable-local-file-access": ""})
+    pdf = pdfkit.from_string(html_pdf, False, options={"enable-local-file-access": ""})
     st.download_button(
         "⬇️ Download PDF",
         data=pdf,
@@ -65,7 +78,7 @@ if st.button("Generate Speaking Order"):
 )
 
 
-if st.button("Generate Speaking Order - Option 2"):
-    order = speaking_order(members_present, data)
-    order.set_index("Order", inplace=True)
-    st.table(order.style.apply(highlight_party, axis=1))
+# if st.button("Generate Speaking Order - Option 2"):
+#     order = speaking_order(members_present, data)
+#     order.set_index("Order", inplace=True)
+#     st.table(order.style.apply(highlight_party, axis=1))

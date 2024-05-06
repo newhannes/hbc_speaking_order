@@ -12,7 +12,7 @@ st.markdown(
     """
 <style>
 span[data-baseweb="tag"] {
-  background-color: #84AE95 !important;
+  background-color: #004647 !important;
 }
 </style>
 """,
@@ -69,6 +69,7 @@ if st.button("Generate Speaking Order"):
 
     html_pdf = styled_pdf.to_html(index=False)
     html_pdf = html_pdf.replace('<table', '<table style="border-spacing: 0 15px;"')
+    html_pdf = html_pdf.replace('<td', '<td style="padding: 0 15px;"')
     # Add a button to download the PDF
     pdf = pdfkit.from_string(html_pdf, False, options={"enable-local-file-access": ""})
     st.download_button(

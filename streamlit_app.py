@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pdfkit
+from datetime import datetime
 
 st.title("House Budget Committee Speaking Order")
 
@@ -60,7 +61,7 @@ def color_party(val):
     return f'background-color: {color}'
 
 if st.button("Generate Speaking Order"):
-    order = speaking_order(members_present, data)[["Speaker", "Rank", "State", "Party"]]
+    order = speaking_order(members_present, data)[["Speaker", "State", "Party", "Rank"]]
     order.reset_index(drop=True, inplace=True)
     order.index = order.index + 1
     styled = order.style.apply(highlight_party, axis=1)
@@ -70,6 +71,10 @@ if st.button("Generate Speaking Order"):
     st.write(html, unsafe_allow_html=True)
 
     html_pdf = styled_pdf.to_html(index=False)
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")   
+    header_html = "<h1 style='text-align: center;'>House Budget Committee Speaking Order</h1>"
+    timestamp_html = f"<h3 style='text-align: center;'>Generated at {timestamp}</h3>"
+    html_pdf = header_html + timestamp_html + html_pdf
     html_pdf = html_pdf.replace('<table', '<table style="border-spacing: 0 5px;"')
     html_pdf = html_pdf.replace('<td', '<td style="padding: 0 15px;"')
     # Add a button to download the PDF

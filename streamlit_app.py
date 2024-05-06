@@ -62,7 +62,7 @@ if st.button("Generate Speaking Order"):
     order.reset_index(drop=True, inplace=True)
     order.index = order.index + 1
     styled = order.style.apply(highlight_party, axis=1)
-    styled_pdf = order.drop(columns=["Party", "Rank"]).style.apply(highlight_party, axis=1)
+    styled_pdf = order.drop(columns=["Rank"]).style.apply(highlight_party, axis=1)
     
     html = styled.to_html(index=False)
     st.write(html, unsafe_allow_html=True)

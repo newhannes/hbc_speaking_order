@@ -3,6 +3,7 @@ import pandas as pd
 import pdfkit
 from datetime import datetime
 import pytz
+from bs4 import BeautifulSoup
 tz = pytz.timezone('US/Eastern')
 
 
@@ -59,20 +60,19 @@ subtle_blue = "#cce5ff"
 
 def highlight_party(row):
      return [f'background-color: {subtle_red}']*len(row) if (row.Party == "R") else [f'background-color: {subtle_blue}']*len(row)
-def color_party(val):
-    color = subtle_red if val == "R" else subtle_blue
-    return f'background-color: {color}'
 
 if st.button("Generate Speaking Order"):
+    # Generate Speaking Order
     order = speaking_order(members_present, data)[["Speaker", "State", "Party", "Rank"]]
     order.reset_index(drop=True, inplace=True)
     order.index = order.index + 1
+    # Style the Speaking Order
     styled = order.style.apply(highlight_party, axis=1)
     styled_pdf = order.drop(columns=["Rank"]).style.apply(highlight_party, axis=1)
-    
+    # Display Speaking Order
     html = styled.to_html(index=False)
     st.write(html, unsafe_allow_html=True)
-
+    # Generate PDF html
     html_pdf = styled_pdf.to_html(index=False)
     timestamp = datetime.now(tz).strftime("%Y-%m-%d %I:%M %p")   
     header_html = "<h1 style='text-align: center;'>House Budget Committee Speaking Order</h1>"
@@ -80,6 +80,16 @@ if st.button("Generate Speaking Order"):
     html_pdf = header_html + timestamp_html + html_pdf
     html_pdf = html_pdf.replace('<table', '<table style="border-spacing: 0 5px;"')
     html_pdf = html_pdf.replace('<td', '<td style="padding: 0 15px;"')
+
+    # Use BeautifulSoup to Remove Party Column
+    soup = BeautifulSoup(html_pdf, 'html.parser')
+    table = soup.find('table')
+    for row in table.find_all('tr'):
+        cells = row.find_all(["th", "td"])
+        if len(cells) > 2:
+            cells[2].extract()
+    html_pdf = str(soup)
+
     # Add a button to download the PDF
     pdf = pdfkit.from_string(html_pdf, False, options={"enable-local-file-access": ""})
     st.download_button(
@@ -88,9 +98,3 @@ if st.button("Generate Speaking Order"):
         file_name=f"House Budget Committee Speaking Order.pdf",
     mime="application/octet-stream"
 )
-
-
-# if st.button("Generate Speaking Order - Option 2"):
-#     order = speaking_order(members_present, data)
-#     order.set_index("Order", inplace=True)
-#     st.table(order.style.apply(highlight_party, axis=1))

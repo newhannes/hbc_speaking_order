@@ -36,12 +36,12 @@ def speaking_order(present, data):
     order = {"Speaker" : [], "Party" : [], "Rank":[], "State":[]}
     for i in range(max(len(republicans), len(democrats))):
         if i < len(republicans):
-            order["Speaker"].append(republicans.iloc[i]['First Name'] + republicans.iloc[i]['Member'])
+            order["Speaker"].append(republicans.iloc[i]['First Name'] + " " + republicans.iloc[i]['Member'])
             order["Party"].append(republicans.iloc[i]['Party'])
             order["Rank"].append(republicans.iloc[i]['Rank'])
             order["State"].append(republicans.iloc[i]['State'])
         if i < len(democrats):
-            order["Speaker"].append(democrats.iloc[i]["First Name"] + democrats.iloc[i]['Member'])
+            order["Speaker"].append(democrats.iloc[i]["First Name"] + " " + democrats.iloc[i]['Member'])
             order["Party"].append(democrats.iloc[i]['Party'])
             order["Rank"].append(democrats.iloc[i]['Rank'])
             order["State"].append(democrats.iloc[i]['State'])

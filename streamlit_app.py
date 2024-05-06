@@ -78,7 +78,7 @@ if st.button("Generate Speaking Order"):
     header_html = "<h1 style='text-align: center;'>House Budget Committee Speaking Order</h1>"
     timestamp_html = f"<h3 style='text-align: center;'>Generated at {timestamp}</h3>"
     html_pdf = header_html + timestamp_html + html_pdf
-    html_pdf = html_pdf.replace('<table', '<table style="border-spacing: 0 5px;"')
+    html_pdf = html_pdf.replace('<table', '<table style="border-spacing: 0 5px; border: 1px solid black;"')
     html_pdf = html_pdf.replace('<td', '<td style="padding: 0 15px;"')
 
     # Use BeautifulSoup to Remove Party Column

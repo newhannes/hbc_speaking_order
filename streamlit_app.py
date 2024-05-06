@@ -84,14 +84,15 @@ if st.button("Generate Speaking Order"):
     # Use BeautifulSoup to Remove Party Column
     soup = BeautifulSoup(html_pdf, 'html.parser')
     table = soup.find('table')
-    i = 0
+    
     for row in table.find_all('tr'):
-        if i == 0:
-            # Rename the column header 
-            row.find_all('th').string = 'TEST'
         cells = row.find_all(["th", "td"])
         if len(cells) > 2:
             cells[3].extract()
+    first_row = table.find('tr')
+    new_tag = soup.new_tag('th')
+    new_tag.string = "Order"
+    first_row.insert(0, new_tag)        
     html_pdf = str(soup)
 
     # Add a button to download the PDF

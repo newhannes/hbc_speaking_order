@@ -6,8 +6,9 @@ st.title("House Budget Committee Speaking Order")
 
 data = pd.read_csv("budget_committee_members.csv")
 data["Member"] = data["Member"].str.split(" ")
-data["Member"] = data["Member"].apply(lambda x: x[1])
 data['First Name'] = data["Member"].apply(lambda x: x[0])
+data["Member"] = data["Member"].apply(lambda x: x[1])
+
 
 st.markdown(
     """

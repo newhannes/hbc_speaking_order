@@ -87,7 +87,7 @@ if st.button("Generate Speaking Order"):
     for row in table.find_all('tr'):
         cells = row.find_all(["th", "td"])
         if len(cells) > 2:
-            cells[1].extract()
+            cells[3].extract()
     html_pdf = str(soup)
 
     # Add a button to download the PDF

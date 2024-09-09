@@ -9,7 +9,72 @@ tz = pytz.timezone('US/Eastern')
 
 st.title("House Budget Committee Speaking Order")
 
-data = pd.read_csv("budget_committee_members.csv")
+########### ======= Scape budget.house.gov members page for member info ======= ###########
+import requests
+import re
+from bs4 import BeautifulSoup
+import pandas as pd
+import us 
+
+def party_member_dict(party_object, party):
+    party_dict = {"Member" : [], "State" : [], "Party" : [], "Rank": []}
+    i = 2
+    for member in party_object:
+        name = member.find("a").text.replace("\n", "").replace("Website of Representative ", "")
+        district = member.find("div", class_ ="membership__district membership__district--sub").text
+        state = district.split("-")[0].strip()
+        state_name = us.states.lookup(state).name
+        party_dict["Member"].append(name)
+        party_dict["State"].append(state_name)
+        party_dict["Party"].append(party)
+        party_dict["Rank"].append(i)
+        i += 1
+    return party_dict
+
+def leader_dict(leader_object, party):
+    name = leader_object.find("a").text.replace("\n", "").strip()
+    district = leader_object.find("div", class_="leadership__district").text
+    state = district.split("-")[0].strip()
+    state_name = us.states.lookup(state).name
+    leader_dict = {"Member" : [name], "State" : [state_name], "Party" : [party], "Rank": [1]}
+    return leader_dict
+
+def add_leader(leader_dict, party_dict):
+    for key in leader_dict:
+        party_dict[key].extend(leader_dict[key])
+    return party_dict
+
+with st.spinner("Scraping the House Budget Committee website for member info..."):
+    # Scrape the website
+    url = "https://budget.house.gov/about/members"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
+    # Find the members
+    partys = soup.find_all("div", class_="membership__aside")
+    repubs = partys[0].find_all("div", class_="membership__list-item")
+    dems = partys[1].find_all("div", class_="membership__list-item")
+    # Create the dictionaries
+    r_dict = party_member_dict(repubs, "R")
+    d_dict = party_member_dict(dems, "D")
+    # Leaders
+    leader_bios = soup.find_all("div", class_="leadership__bio")
+    chairman = leader_bios[0]
+    ranking_member = leader_bios[1]
+    chairman_dict = leader_dict(chairman, "R")
+    ranking_member_dict = leader_dict(ranking_member, "D")
+    # Add the leaders to the dictionaries
+    r_dict = add_leader(chairman_dict, r_dict)
+    d_dict = add_leader(ranking_member_dict, d_dict)
+    # Create the dataframes
+    r_df = pd.DataFrame(r_dict).sort_values(by="Rank").reset_index(drop=True)
+    d_df = pd.DataFrame(d_dict).sort_values(by="Rank").reset_index(drop=True)
+    # Combine the dataframes
+    data = pd.concat([r_df, d_df], ignore_index=True)
+
+dems = pd.read_excel("budget_committee_members.xlsx").query("Party == 'D'")
+data = pd.concat([r_df, dems], ignore_index=True) 
+
+## Prep the data
 data["Member"] = data["Member"].str.split(" ")
 data['First Name'] = data["Member"].apply(lambda x: x[0])
 data["Member"] = data["Member"].apply(lambda x: x[1])

@@ -71,7 +71,7 @@ with st.spinner("Scraping the House Budget Committee website for member info..."
     # Combine the dataframes
     data = pd.concat([r_df, d_df], ignore_index=True)
 
-dems = pd.read_excel("budget_committee_members.xlsx").query("Party == 'D'")
+dems = pd.read_csv("budget_committee_members.csv").query("Party == 'D'")
 data = pd.concat([r_df, dems], ignore_index=True) 
 
 ## Prep the data

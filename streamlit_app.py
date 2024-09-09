@@ -6,7 +6,7 @@ import pytz
 from bs4 import BeautifulSoup
 tz = pytz.timezone('US/Eastern')
 
-
+st.image("inputs/HBR_Logo_Primary.png")
 st.title("House Budget Committee Speaking Order")
 
 ########### ======= Scape budget.house.gov members page for member info ======= ###########

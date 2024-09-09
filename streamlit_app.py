@@ -70,7 +70,7 @@ with st.spinner("Scraping the House Budget Committee website for member info..."
     d_df = pd.DataFrame(d_dict).sort_values(by="Rank").reset_index(drop=True)
     # Combine the dataframes
     data = pd.concat([r_df, d_df], ignore_index=True)
-
+    print("HBC website scraped!")
 dems = pd.read_csv("budget_committee_members.csv").query("Party == 'D'")
 data = pd.concat([r_df, dems], ignore_index=True) 
 

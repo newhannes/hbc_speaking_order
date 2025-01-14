@@ -4,6 +4,8 @@ import pdfkit
 from datetime import datetime
 import pytz
 from bs4 import BeautifulSoup
+import time
+
 tz = pytz.timezone('US/Eastern')
 
 st.image("inputs/HBR_Logo_Primary.png")
@@ -45,6 +47,7 @@ def add_leader(leader_dict, party_dict):
     return party_dict
 
 with st.spinner("Scraping the House Budget Committee website for member info..."):
+    time.sleep(1.5)
     # Scrape the website
     url = "https://budget.house.gov/about/members"
     response = requests.get(url)
